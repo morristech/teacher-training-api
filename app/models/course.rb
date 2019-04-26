@@ -88,7 +88,6 @@ class Course < ApplicationRecord
       # system guard
       errors.add(:enrichments, 'can not find any')
     else
-      pp latest.valid? :publish
       latest.valid? :publish
     end
   end
