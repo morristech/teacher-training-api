@@ -46,13 +46,21 @@ class CourseEnrichment < ApplicationRecord
   validates :interview_process, words_count: { max_words_count: 250 }, on: :publish
   validates :how_school_placements_work, words_count: { max_words_count: 350 }, on: :publish
 
-  # salary vs fee needs forking
   validates :fee_international, :fee_uk_eu, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100000 }, on: :publish
-  validates :fee_uk_eu, presence: true, on: :publish
-  validates :salary_details, presence: true, on: :publish
   validates :fee_details, words_count: { max_words_count: 250 }, on: :publish
   validates :salary_details, words_count: { max_words_count: 250 }, on: :publish
   validates :financial_support, words_count: { max_words_count: 250 }, on: :publish
+
+  validate :fee_xor_salary
+
+  def fee_xor_salary
+    fee_based = fee_uk_eu.present? || fee_international.present?
+    salary_based = salary_details.present?
+    unless fee_based ^ salary_based
+      both_present = fee_based && salary_based
+      errors.add(:base, "Specify either a fee or a salary#{both_present ? ", not both" : ""}")
+    end
+  end
 
   def has_been_published_before?
     last_published_timestamp_utc.present?
