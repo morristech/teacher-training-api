@@ -109,7 +109,12 @@ run do |opts, args, _cmd|
     when :apply_date
       apply_date = Date.parse(cli.ask("What's the new apply date?  "))
       if cli.agree("Apply date will be set to #{apply_date.strftime('%d %b %Y')}. Continue? ")
-        courses.each { |c| course.site_statuses.applications_accepted_from = apply_date }
+        courses.each do |c|
+          c.site_statuses.each do |ss|
+            ss.applications_accepted_from = apply_date
+            ss.save!
+          end
+        end
       end
       flow = :root
     when :title
