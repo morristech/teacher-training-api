@@ -1,5 +1,5 @@
 name 'edit_published'
-summary 'Edit publisheds course directly in the DB'
+summary 'Edit published course directly in the DB'
 
 run do |opts, args, _cmd|
   MCB.init_rails(opts)
