@@ -106,6 +106,12 @@ run do |opts, args, _cmd|
         courses.each { |c| c.start_date = start_date }
       end
       flow = :root
+    when :apply_date
+      apply_date = Date.parse(cli.ask("What's the new apply date?  "))
+      if cli.agree("Apply date will be set to #{apply_date.strftime('%d %b %Y')}. Continue? ")
+        courses.each { |c| course.site_statuses.applications_accepted_from = apply_date }
+      end
+      flow = :root
     when :title
       current_course_names = courses.map(&:name).uniq
       name = cli.ask("Course title? (current titles: #{current_course_names.join(', ')})  ").strip
