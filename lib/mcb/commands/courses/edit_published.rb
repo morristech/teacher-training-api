@@ -33,7 +33,7 @@ run do |opts, args, _cmd|
         end
         menu.choice(:exit) { finished = true }
         menu.choice(:toggle_sites) { flow = :toggle_sites } unless multi_course_mode
-        %i[route qualifications study_mode accredited_body english maths science start_date title].each do |attr|
+        %i[route qualifications study_mode accredited_body english maths science start_date title apply_date].each do |attr|
           menu.choice("Edit #{attr}") { flow = attr }
         end
         menu.choice('Publish training locations (not enrichment)') { flow = :publish_sites }
