@@ -45,8 +45,10 @@ run do |opts, args, _cmd|
         menu.prompt = "Toggling course sites for #{course.course_code}"
         menu.choice(:done) { flow = :root }
         provider.sites.order(:location_name).each do |site|
-          if site.in?(course.sites_not_associated_with_course)
-            menu.choice(site.description) { course.add_site!(site: site) }
+          if !site.in?(course.site_statuses.map(&:site))
+            menu.choice(site.description) {
+              course.add_site!(site: site)
+            }
           else
             site_status = course.site_statuses.detect { |ss| ss.site == site }
             menu.choice(site_status.description) do
