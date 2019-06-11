@@ -87,18 +87,21 @@ run do |opts, args, _cmd|
     when :english
       cli.choose do |menu|
         menu.prompt = "Editing course english"
+        menu.choice(:exit) { finished = true }
         menu.choices(*Course.englishes.keys) { |value| courses.each{ |c| c.english = value } }
         flow = :root
       end
     when :maths
       cli.choose do |menu|
         menu.prompt = "Editing course maths"
+        menu.choice(:exit) { finished = true }
         menu.choices(*Course.maths.keys) { |value| courses.each{ |c| c.maths = value } }
         flow = :root
       end
     when :science
       cli.choose do |menu|
         menu.prompt = "Editing course science"
+        menu.choice(:exit) { finished = true }
         menu.choices(*Course.sciences.keys) { |value| courses.each{ |c| c.science = value } }
         flow = :root
       end
