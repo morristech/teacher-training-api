@@ -33,9 +33,6 @@ run do |opts, args, _cmd|
         end
         menu.choice(:exit) { finished = true }
         menu.choice(:toggle_sites) { flow = :toggle_sites } unless multi_course_mode
-        %i[route qualifications study_mode accredited_body english maths science start_date title apply_date].each do |attr|
-          menu.choice("Edit #{attr}") { flow = attr }
-        end
         menu.choice('Publish training locations (not enrichment)') { flow = :publish_sites }
         menu.choice('Sync courses to Find') { flow = :sync_to_find }
       end
@@ -61,88 +58,6 @@ run do |opts, args, _cmd|
           end
         end
       end
-    when :route
-      cli.choose do |menu|
-        menu.prompt = "Editing course route"
-        menu.choices(*Course.program_types.keys) { |value| courses.each{ |c| c.program_type = value } }
-        flow = :root
-      end
-    when :qualifications
-      cli.choose do |menu|
-        menu.prompt = "Editing course qualifications"
-        menu.choices(*Course.qualifications.keys) { |value| courses.each{ |c| c.qualification = value } }
-        flow = :root
-      end
-    when :study_mode
-      cli.choose do |menu|
-        menu.prompt = "Editing course study mode"
-        menu.choices(*Course.study_modes.keys) { |value| courses.each{ |c| c.study_mode = value } }
-        flow = :root
-      end
-    when :accredited_body
-      accredited_body_provider_code = cli.ask("What's the provider code of the new accredited body? (can't be blank)  ")
-      accredited_body = Provider.find_by!(provider_code: accredited_body_provider_code)
-      courses.each { |c| c.accrediting_provider = accredited_body }
-      flow = :root
-    when :english
-      cli.choose do |menu|
-        if multi_course_mode
-          menu.prompt = "Editing english requirements for #{courses.count} courses; selection:"
-        else
-          menu.prompt = "Editing english requirements, currently #{courses.first.maths}; selection:"
-        end
-        menu.choice(:exit) { finished = true }
-        menu.choices(*Course.englishes.keys) { |value| courses.each{ |c| c.english = value } }
-        flow = :root
-      end
-    when :maths
-      cli.choose do |menu|
-        if multi_course_mode
-          menu.prompt = "Editing maths requirements for #{courses.count} courses; selection:"
-        else
-          menu.prompt = "Editing maths requirements, currently #{courses.first.maths}; selection:"
-        end
-        menu.choice(:exit) { finished = true }
-        menu.choices(*Course.maths.keys) { |value| courses.each{ |c| c.maths = value } }
-        flow = :root
-      end
-    when :science
-      cli.choose do |menu|
-        if multi_course_mode
-          menu.prompt = "Editing science requirements for #{courses.count} courses; selection:"
-        else
-          menu.prompt = "Editing science requirements, currently #{courses.first.maths}; selection:"
-        end
-        menu.choice(:exit) { finished = true }
-        menu.choices(*Course.sciences.keys) { |value| courses.each{ |c| c.science = value } }
-        flow = :root
-      end
-    when :start_date
-      start_date = Date.parse(cli.ask("What's the new start date?  "))
-      if cli.agree("Start date will be set to #{start_date.strftime('%d %b %Y')}. Continue? ")
-        courses.each { |c| c.start_date = start_date }
-      end
-      flow = :root
-    when :apply_date
-      apply_date = Date.parse(cli.ask("What's the new apply date?  "))
-      if cli.agree("Apply date will be set to #{apply_date.strftime('%d %b %Y')}. Continue? ")
-        courses.each do |c|
-          c.site_statuses.each do |ss|
-            ss.applications_accepted_from = apply_date
-            ss.save!
-          end
-        end
-      end
-      flow = :root
-    when :title
-      current_course_names = courses.map(&:name).uniq
-      name = cli.ask("Course title? (current titles: #{current_course_names.join(', ')})  ").strip
-      courses.each { |c| c.name = name }
-      flow = :root
-    when :sync_to_find
-      command_params = ['courses', 'sync_to_find', provider.provider_code, *courses.map(&:course_code)] + (opts[:env].present? ? ['-E', opts[:env]] : [])
-      $mcb.run(command_params)
-      flow = :root
     when :publish_sites
       courses.each do |course|
         puts "Setting the training locations to running on #{course.provider.provider_code}/#{course.course_code}"
