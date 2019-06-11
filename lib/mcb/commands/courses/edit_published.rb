@@ -29,7 +29,7 @@ run do |opts, args, _cmd|
         if multi_course_mode
           menu.prompt = "Editing multiple courses"
         else
-          menu.prompt = "Editing course"
+          menu.prompt = "Editing course #{courses.first.course_code}"
         end
         menu.choice(:exit) { finished = true }
         menu.choice(:toggle_sites) { flow = :toggle_sites } unless multi_course_mode
