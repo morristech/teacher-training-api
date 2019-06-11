@@ -64,7 +64,7 @@ class CourseEditor
         menu.choice("No more subjects") { finished = true }
         menu.choice("Cancel without saving") { finished = true; cancel = true }
         Subject.all.order(:subject_name).each do |subject|
-          menu.choice(subject.subject_name) { |cmd| subjects << subject }
+          menu.choice(subject.subject_name) { subjects << subject }
         end
       end
     end
@@ -80,7 +80,7 @@ class CourseEditor
 
         menu.choice("No more training locations") { finished = true }
         @course.provider.sites.each do |site|
-          menu.choice(site.location_name) { |cmd| @course.add_site!(site: site) }
+          menu.choice(site.location_name) { @course.add_site!(site: site) }
         end
       end
     end
