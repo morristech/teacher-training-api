@@ -1,13 +1,13 @@
 RSpec.describe Course, type: :model do
   describe "adding and removing sites on a course" do
-    let(:new_site) { create(:site, code: 'A') }
-    let(:existing_site) { create(:site, code: 'B') }
+    let(:new_site) { build(:site, code: 'A') }
+    let(:existing_site) { build(:site, code: 'B') }
 
-    let(:provider) { create(:provider, sites: [new_site, existing_site]) }
+    let(:provider) { build(:provider, sites: [new_site, existing_site]) }
 
     let(:new_site_status) { subject.site_statuses.find_by!(site: new_site) }
 
-    let(:course) { build(:course, provider: provider,  site_statuses: [existing_site_status]) }
+    let(:course) { create(:course, provider: provider, site_statuses: [existing_site_status]) }
     subject { course }
 
     context "for running course" do
