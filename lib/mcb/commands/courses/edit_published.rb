@@ -86,21 +86,33 @@ run do |opts, args, _cmd|
       flow = :root
     when :english
       cli.choose do |menu|
-        menu.prompt = "Editing course english"
+        if multi_course_mode
+          menu.prompt = "Editing english requirements for #{courses.count} courses; selection:"
+        else
+          menu.prompt = "Editing english requirements, currently #{courses.first.maths}; selection:"
+        end
         menu.choice(:exit) { finished = true }
         menu.choices(*Course.englishes.keys) { |value| courses.each{ |c| c.english = value } }
         flow = :root
       end
     when :maths
       cli.choose do |menu|
-        menu.prompt = "Editing course maths"
+        if multi_course_mode
+          menu.prompt = "Editing maths requirements for #{courses.count} courses; selection:"
+        else
+          menu.prompt = "Editing maths requirements, currently #{courses.first.maths}; selection:"
+        end
         menu.choice(:exit) { finished = true }
         menu.choices(*Course.maths.keys) { |value| courses.each{ |c| c.maths = value } }
         flow = :root
       end
     when :science
       cli.choose do |menu|
-        menu.prompt = "Editing course science"
+        if multi_course_mode
+          menu.prompt = "Editing science requirements for #{courses.count} courses; selection:"
+        else
+          menu.prompt = "Editing science requirements, currently #{courses.first.maths}; selection:"
+        end
         menu.choice(:exit) { finished = true }
         menu.choices(*Course.sciences.keys) { |value| courses.each{ |c| c.science = value } }
         flow = :root
