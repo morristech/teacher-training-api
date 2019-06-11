@@ -4,52 +4,38 @@ usage 'create <provider_code>'
 param :provider_code, transform: ->(code) { code.upcase }
 
 class CourseEditor
-  def initialize(cli:, course:)
-    @cli = cli
-    @course = course
+  def initialize(provider:, requester:)
+    @cli = HighLine.new
+    @course = provider.courses.build
+
+    @courses_editor = MCB::CoursesEditor.new(
+      provider: provider,
+      courses: [@course],
+      requester: requester,
+    )
   end
 
   def new_course_wizard
-    ask_name
-    ask_course_code
-    ask_qualification
-    ask_study_mode
+    @courses_editor.edit(:title)
+    @courses_editor.edit(:qualifications)
+    @courses_editor.edit(:study_mode)
+    @courses_editor.edit(:accredited_body)
+    @courses_editor.edit(:start_date)
+    @courses_editor.edit(:route)
+    @courses_editor.edit(:maths)
+    @courses_editor.edit(:english)
+    @courses_editor.edit(:science)
     ask_age_range
-    ask_accredited_body
-    ask_start_date
-    ask_program_type
-    ask_maths
-    ask_english
-    ask_science
+    ask_course_code
     ask_ucas_subjects
 
     if confirm_creation?
       try_saving_course
       ask_sites
-      ask_applications_accepted_from
+      @courses_editor.edit(:application_opening_date)
       print_summary
     else
       puts "Aborting"
-    end
-  end
-
-  def ask_name
-    @course.name = @cli.ask("Course name?  ")
-  end
-
-  def ask_qualification
-    @course.qualification = @cli.choose do |menu|
-      menu.prompt = "What's the course outcome? (#{@course.qualification} if blank)  "
-      menu.choices(*Course.qualifications.keys)
-      menu.default = @course.qualification
-    end
-  end
-
-  def ask_study_mode
-    @course.study_mode = @cli.choose do |menu|
-      menu.prompt = "Full time or part time? (#{@course.study_mode} if blank)  "
-      menu.choices(*Course.study_modes.keys)
-      menu.default = @course.study_mode
     end
   end
 
@@ -60,34 +46,8 @@ class CourseEditor
     end
   end
 
-  def ask_accredited_body
-    code = @cli.ask("Provider code of accredited body (leave blank if self-accredited)  ")
-    @course.accrediting_provider = code.present? ? Provider.find_by(provider_code: code) : @course.provider
-  end
-
-  def ask_start_date
-    @course.start_date = Date.parse(@cli.ask("Start date?  ") { |q| q.default = @course.start_date.strftime("%b %Y") })
-  end
-
   def ask_course_code
     @course.course_code = @cli.ask("Course code?  ")
-  end
-
-  def ask_program_type
-    @course.program_type = @cli.choose do |menu|
-      menu.prompt = "What's the route?  "
-      menu.choices(*Course.program_types.keys)
-    end
-  end
-
-  [:maths, :english, :science].each do |subject|
-    define_method("ask_#{subject}") do
-      answer = @cli.choose do |menu|
-        menu.prompt = "What's the #{subject} entry requirements?  "
-        menu.choices(*Course::ENTRY_REQUIREMENT_OPTIONS.keys)
-      end
-      @course.send("#{subject}=".to_sym, answer)
-    end
   end
 
   def ask_ucas_subjects
@@ -126,11 +86,6 @@ class CourseEditor
     end
   end
 
-  def ask_applications_accepted_from
-    response = @cli.ask("Date that applications accepted from? (#{::SiteStatus.applications_accepted_from_default.strftime("%d %b %Y")} if blank)  ")
-    @course.applications_open_from = Date.parse(response) unless response.empty?
-  end
-
   def confirm_creation?
     puts "\nAbout to create the following course:"
     print_course
@@ -144,7 +99,7 @@ class CourseEditor
   end
 
   def print_course
-    puts Terminal::Table.new rows: MCB::CourseShow.new(@course).to_h
+    puts MCB::Render::ActiveRecord.course(@course)
   end
 
   def try_saving_course
@@ -163,7 +118,7 @@ run do |opts, args, _cmd|
 
   Course.connection.transaction do
     provider = Provider.find_by!(provider_code: args[:provider_code])
-    course = provider.courses.build
-    CourseEditor.new(cli: HighLine.new, course: course).new_course_wizard
+    requester = User.find_by!(email: MCB.config[:email])
+    CourseEditor.new(provider: provider, requester: requester).new_course_wizard
   end
 end

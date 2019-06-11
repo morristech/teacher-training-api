@@ -9,12 +9,12 @@ module MCB
       application_opening_date: :applications_open_from,
     }.freeze
 
-    def initialize(provider:, requester:, course_codes: [])
+    def initialize(provider:, requester:, course_codes: [], courses: nil)
       @cli = CoursesEditorCLI.new(provider)
 
       @provider = provider
       @requester = requester
-      @courses = course_codes.present? ? find_courses(course_codes) : provider.courses
+      @courses = courses || load_courses(course_codes, provider)
 
       check_authorisation
     end
@@ -37,8 +37,6 @@ module MCB
       end
     end
 
-  private
-
     def edit(logical_attribute)
       database_attribute = LOGICAL_NAME_TO_DATABASE_NAME_MAPPING[logical_attribute] || logical_attribute
       print_existing(database_attribute)
@@ -46,6 +44,13 @@ module MCB
       unless user_response_from_cli.nil?
         update(database_attribute => user_response_from_cli)
       end
+    end
+
+  private
+
+    def load_courses(course_codes, provider)
+      (course_codes.present? ? find_courses(course_codes) : provider.courses).
+        order(:course_code)
     end
 
     def check_authorisation
@@ -58,16 +63,24 @@ module MCB
     end
 
     def print_existing(attribute_name)
-      puts "Existing values for course #{attribute_name}:"
-      table = Tabulo::Table.new @courses.order(:course_code) do |t|
-        t.add_column(:course_code, header: "course\ncode", width: 4)
-        t.add_column(attribute_name) unless attribute_name == :course_code
+      if @courses.select(&:persisted?).any?
+        puts "Existing values for course #{attribute_name}:"
+        table = Tabulo::Table.new @courses do |t|
+          t.add_column(:course_code, header: "course\ncode", width: 4)
+          t.add_column(attribute_name) unless attribute_name == :course_code
+        end
+        puts table.pack(max_table_width: nil), table.horizontal_rule
       end
-      puts table.pack(max_table_width: nil), table.horizontal_rule
     end
 
     def update(attrs)
-      @courses.each { |course| course.update(attrs) }
+      @courses.each do |course|
+        if course.new_record?
+          attrs.each { |key, value| course.send("#{key}=".to_sym, value) }
+        else
+          course.update(attrs)
+        end
+      end
     end
 
     def can_update?(course)
