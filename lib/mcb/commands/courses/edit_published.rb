@@ -23,7 +23,6 @@ run do |opts, args, _cmd|
   MCB.init_rails(opts)
 
   cli = HighLine.new
-
   provider = Provider.find_by!(provider_code: args[0].upcase)
 
   all_courses_mode = args.size == 1
@@ -35,18 +34,13 @@ run do |opts, args, _cmd|
 
   multi_course_mode = courses.size > 1
 
-  flow = :root
   finished = false
   until finished do
     choice = cli.choose do |menu|
       courses[0..1].each { |c| puts Terminal::Table.new rows: MCB::CourseShow.new(c).to_h }
       puts "Only showing first 2 courses of #{courses.size}." if courses.size > 2
 
-      if multi_course_mode
-        menu.prompt = "Editing multiple courses"
-      else
-        menu.prompt = "Editing course #{courses.first.course_code}"
-      end
+      menu.prompt = "Editing " + (multi_course_mode ? "multiple courses" : "course #{courses.first.course_code}")
       menu.choice(:exit) { finished = true }
       menu.choice(:toggle_sites) unless multi_course_mode
       menu.choice('Publish training locations (not enrichment)')
@@ -59,13 +53,8 @@ run do |opts, args, _cmd|
       courses.each do |course|
         puts "Setting the training locations to running on #{course.provider.provider_code}/#{course.course_code}"
         course.publish_sites
+        course.reload
       end
-    end
-
-    unless finished
-      courses.each(&:save!)
-      provider.reload
-      courses.reload
     end
   end
 end
