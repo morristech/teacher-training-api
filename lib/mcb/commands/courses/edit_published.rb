@@ -19,20 +19,22 @@ def add_or_remove_sites_from(course, provider, cli)
   end
 end
 
+def publish_sites_for(courses)
+  courses.each do |course|
+    puts "Setting the training locations to running on #{course.provider.provider_code}/#{course.course_code}"
+    course.publish_sites
+    course.reload
+  end
+end
+
 run do |opts, args, _cmd|
   MCB.init_rails(opts)
 
   cli = HighLine.new
   provider = Provider.find_by!(provider_code: args[0].upcase)
-
-  all_courses_mode = args.size == 1
-  courses = if all_courses_mode
-              provider.courses
-            else
-              provider.courses.where(course_code: args.to_a.map(&:upcase))
-            end
-
-  multi_course_mode = courses.size > 1
+  course_codes = args.to_a[1..-1].map(&:upcase)
+  courses = provider.courses
+  courses = courses.where(course_code: course_codes) unless course_codes.empty?
 
   finished = false
   until finished do
@@ -40,9 +42,9 @@ run do |opts, args, _cmd|
       courses[0..1].each { |c| puts Terminal::Table.new rows: MCB::CourseShow.new(c).to_h }
       puts "Only showing first 2 courses of #{courses.size}." if courses.size > 2
 
-      menu.prompt = "Editing " + (multi_course_mode ? "multiple courses" : "course #{courses.first.course_code}")
+      menu.prompt = "Editing #{'course'.pluralize(courses.size)}: #{courses.pluck(:course_code).sort.join(', ')}"
       menu.choice(:exit) { finished = true }
-      menu.choice(:toggle_sites) unless multi_course_mode
+      menu.choice(:toggle_sites) unless courses.size > 1
       menu.choice('Publish training locations (not enrichment)')
     end
 
@@ -50,11 +52,7 @@ run do |opts, args, _cmd|
     when :toggle_sites
       add_or_remove_sites_from(courses.first, provider, cli)
     when 'Publish training locations (not enrichment)'
-      courses.each do |course|
-        puts "Setting the training locations to running on #{course.provider.provider_code}/#{course.course_code}"
-        course.publish_sites
-        course.reload
-      end
+      publish_sites_for(courses)
     end
   end
 end
