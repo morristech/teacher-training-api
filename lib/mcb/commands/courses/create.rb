@@ -27,10 +27,10 @@ class CourseEditor
     @courses_editor.edit(:science)
     ask_age_range
     ask_course_code
-    ask_ucas_subjects
 
     if confirm_creation?
       try_saving_course
+      ask_ucas_subjects
       ask_sites
       @courses_editor.edit(:application_opening_date)
       print_summary
@@ -51,24 +51,20 @@ class CourseEditor
   end
 
   def ask_ucas_subjects
-    puts "Original subjects: #{@course.subjects.pluck(:subject_name).join(', ')}"
-
-    finished = false
-    cancel = false
-    subjects = []
-    until finished
+    toggling_finished = false
+    until toggling_finished do
       @cli.choose do |menu|
-        subject_list = !subjects.empty? ? "(#{subjects.map(&:subject_name).join(', ')} so far)" : ""
-        menu.prompt = "UCAS subjects to assign?#{subject_list}  "
-
-        menu.choice("No more subjects") { finished = true }
-        menu.choice("Cancel without saving") { finished = true; cancel = true }
-        Subject.all.order(:subject_name).each do |subject|
-          menu.choice(subject.subject_name) { subjects << subject }
+        menu.choice(:exit) { toggling_finished = true }
+        ::Subject.all.order(:subject_name).each do |subject|
+          if subject.in?(@course.subjects)
+            menu.choice("[x] #{subject.subject_name}") { @course.subjects.delete(subject) }
+          else
+            menu.choice("[ ] #{subject.subject_name}") { @course.subjects << subject }
+          end
         end
       end
+      @course.subjects.reload
     end
-    @course.subjects = subjects unless cancel
   end
 
   def ask_sites
