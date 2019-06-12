@@ -456,8 +456,8 @@ RSpec.describe Course, type: :model do
   end
 
   describe "#applications_open_from=" do
-    let(:provider) { create(:provider) }
-    let(:sites) { create_list(:site, 3, provider: provider) }
+    let(:provider) { create(:provider, sites: [sites]) }
+    let(:sites) { build_list(:site, 3) }
     let!(:existing_site_status) {
       sites.each do |site|
         create(:site_status,

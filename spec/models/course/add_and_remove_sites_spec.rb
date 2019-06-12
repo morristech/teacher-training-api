@@ -1,7 +1,7 @@
 RSpec.describe Course, type: :model do
   describe "adding and removing sites on a course" do
-    let(:new_site) { build(:site, code: 'A') }
-    let(:existing_site) { build(:site, code: 'B') }
+    let(:new_site) { build(:site) }
+    let(:existing_site) { build(:site) }
 
     let(:provider) { build(:provider, sites: [new_site, existing_site]) }
 
