@@ -1,6 +1,24 @@
 name 'edit_published'
 summary 'Edit published course directly in the DB'
 
+def add_or_remove_sites_from(course, provider, cli)
+  toggling_finished = false
+  until toggling_finished do
+    cli.choose do |menu|
+      menu.prompt = "Toggling course sites for #{course.course_code}"
+      menu.choice(:done) { toggling_finished = true }
+      provider.sites.order(:location_name).each do |site|
+        if site.in?(course.sites)
+          menu.choice("[x] #{site.description}") { course.remove_site!(site: site) }
+        else
+          menu.choice("[ ] #{site.description}") { course.add_site!(site: site) }
+        end
+      end
+    end
+    course.sites.reload
+  end
+end
+
 run do |opts, args, _cmd|
   MCB.init_rails(opts)
 
@@ -36,31 +54,7 @@ run do |opts, args, _cmd|
 
     case choice
     when :toggle_sites
-      course = courses.first
-      toggling_finished = false
-      until toggling_finished do
-        cli.choose do |menu|
-          menu.prompt = "Toggling course sites for #{course.course_code}"
-          menu.choice(:done) { toggling_finished = true }
-          provider.sites.order(:location_name).each do |site|
-            if !site.in?(course.site_statuses.map(&:site))
-              menu.choice(site.description) {
-                course.add_site!(site: site)
-              }
-            else
-              site_status = course.site_statuses.detect { |ss| ss.site == site }
-              menu.choice(site_status.description) do
-                if site_status.status_running? || site_status.status_new_status?
-                  course.remove_site!(site: site)
-                else
-                  course.add_site!(site: site)
-                end
-              end
-            end
-          end
-        end
-        courses.first.site_statuses.reload
-      end
+      add_or_remove_sites_from(courses.first, provider, cli)
     when 'Publish training locations (not enrichment)'
       courses.each do |course|
         puts "Setting the training locations to running on #{course.provider.provider_code}/#{course.course_code}"
