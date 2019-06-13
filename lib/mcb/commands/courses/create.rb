@@ -31,7 +31,7 @@ class CourseEditor
     if confirm_creation?
       try_saving_course
       @courses_editor.edit_subjects
-      ask_sites
+      @courses_editor.edit_sites
       @courses_editor.edit(:application_opening_date)
       print_summary
     else
@@ -48,21 +48,6 @@ class CourseEditor
 
   def ask_course_code
     @course.course_code = @cli.ask("Course code?  ")
-  end
-
-  def ask_sites
-    finished = false
-    until finished
-      @cli.choose do |menu|
-        sites_list = !@course.sites.empty? ? "(#{@course.sites.map(&:location_name).join(', ')} so far)" : ""
-        menu.prompt = "Which training locations to assign? #{sites_list}  "
-
-        menu.choice("No more training locations") { finished = true }
-        @course.provider.sites.each do |site|
-          menu.choice(site.location_name) { @course.add_site!(site: site) }
-        end
-      end
-    end
   end
 
   def confirm_creation?
