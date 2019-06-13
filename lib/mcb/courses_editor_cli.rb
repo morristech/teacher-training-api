@@ -21,6 +21,7 @@ module MCB
           "edit start date",
           "edit application opening date",
           "edit age range",
+          "edit subjects",
         )
         menu.choice("sync course(s) to Find")
       end
@@ -103,6 +104,24 @@ module MCB
         q.whitespace = :strip_and_collapse
         q.validate = /\S+/
       end
+    end
+
+    def ask_ucas_subjects(current_course_subjects)
+      selected_subjects = current_course_subjects
+      finished = false
+      until finished do
+        @cli.choose do |menu|
+          menu.choice("exit") { finished = true }
+          ::Subject.all.order(:subject_name).each do |subject|
+            if subject.in?(selected_subjects)
+              menu.choice("[x] #{subject.subject_name}") { selected_subjects.delete(subject) }
+            else
+              menu.choice("[ ] #{subject.subject_name}") { selected_subjects << subject }
+            end
+          end
+        end
+      end
+      selected_subjects
     end
 
   private

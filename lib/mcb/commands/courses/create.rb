@@ -30,7 +30,7 @@ class CourseEditor
 
     if confirm_creation?
       try_saving_course
-      ask_ucas_subjects
+      @courses_editor.edit_subjects
       ask_sites
       @courses_editor.edit(:application_opening_date)
       print_summary
@@ -48,23 +48,6 @@ class CourseEditor
 
   def ask_course_code
     @course.course_code = @cli.ask("Course code?  ")
-  end
-
-  def ask_ucas_subjects
-    toggling_finished = false
-    until toggling_finished do
-      @cli.choose do |menu|
-        menu.choice(:exit) { toggling_finished = true }
-        ::Subject.all.order(:subject_name).each do |subject|
-          if subject.in?(@course.subjects)
-            menu.choice("[x] #{subject.subject_name}") { @course.subjects.delete(subject) }
-          else
-            menu.choice("[ ] #{subject.subject_name}") { @course.subjects << subject }
-          end
-        end
-      end
-      @course.subjects.reload
-    end
   end
 
   def ask_sites

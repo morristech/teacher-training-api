@@ -26,7 +26,9 @@ module MCB
       until finished
         choice = @cli.main_loop
 
-        if choice.start_with?("edit")
+        if choice == 'edit subjects'
+          edit_subjects
+        elsif choice.start_with?("edit")
           attribute = choice.gsub("edit ", "").gsub(" ", "_").to_sym
           edit(attribute)
         elsif choice =~ /sync .* to Find/
@@ -46,11 +48,23 @@ module MCB
       end
     end
 
+    def edit_subjects
+      @cli.ask_ucas_subjects(course.subjects) # the subjects are edited inline
+    end
+
   private
 
     def load_courses(course_codes, provider)
       (course_codes.present? ? find_courses(course_codes) : provider.courses).
         order(:course_code)
+    end
+
+    def course
+      if @courses.count != 1
+        raise ArgumentError, "Cannot do this operation when there are multiple courses"
+      end
+
+      @courses.first
     end
 
     def check_authorisation
