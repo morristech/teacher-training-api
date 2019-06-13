@@ -21,9 +21,9 @@ module MCB
 
     def run
       finished = false
-      puts "Editing #{course_codes.join(', ')}"
-      print_at_most_two_courses
       until finished
+        puts "Editing #{course_codes.join(', ')}"
+        print_at_most_two_courses
         choice = @cli.main_loop
 
         if choice == 'edit subjects'
