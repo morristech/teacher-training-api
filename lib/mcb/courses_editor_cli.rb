@@ -132,13 +132,13 @@ module MCB
           menu.choice("exit") { finished = true }
           provider.sites.order(:location_name).each do |site|
             if site.in?(course.sites)
-              menu.choice("[x] #{site.description}") { course.remove_site!(site: site) }
+              menu.choice("[x] #{site.description}") { course.sites.destroy(site) }
             else
-              menu.choice("[ ] #{site.description}") { course.add_site!(site: site) }
+              menu.choice("[ ] #{site.description}") { course.sites << site }
             end
           end
         end
-        course.sites.reload
+        course.reload
       end
     end
 

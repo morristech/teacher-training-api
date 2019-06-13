@@ -17,6 +17,6 @@ run do |opts, args, _cmd|
   courses = provider.courses.where(course_code: course_codes)
   courses.each do |course|
     puts "Adding #{site.location_name} to course #{course.course_code}"
-    course.add_site!(site: site)
+    course.sites << site
   end
 end
