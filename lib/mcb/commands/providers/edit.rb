@@ -14,11 +14,11 @@ run do |opts, args, _cmd|
   until finished do
     cli.choose do |menu|
       courses = provider.courses
-      if chosen_course_codes.empty?
-        menu.prompt = "Choose one or multiple courses to edit."
-      else
-        menu.prompt = "Chosen courses: #{chosen_course_codes.join(", ")}"
-      end
+      menu.prompt = if chosen_course_codes.empty?
+                      "Choose one or multiple courses to edit."
+                    else
+                      "Chosen courses: #{chosen_course_codes.join(', ')}"
+                    end
 
       unchosen_course_codes = (courses.map(&:course_code) - chosen_course_codes)
 

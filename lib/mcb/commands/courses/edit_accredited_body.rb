@@ -29,7 +29,7 @@ run do |opts, args, _cmd|
 
     case chosen_body
     when Provider
-      new_accredited_body_code = cli.ask("What's the provider code of the new accredited provider?  ") {|a| a.default = provider.provider_code }
+      new_accredited_body_code = cli.ask("What's the provider code of the new accredited provider?  ") { |a| a.default = provider.provider_code }
       new_accredited_body = Provider.find_by!(provider_code: new_accredited_body_code.strip)
       affected_courses = provider.courses.where(accrediting_provider: chosen_body)
 
@@ -37,7 +37,7 @@ run do |opts, args, _cmd|
       puts affected_courses.pluck(:course_code).join(", ")
 
       if cli.agree("Continue? ")
-        provider.courses.where(accrediting_provider: chosen_body).each {|c| c.update(accrediting_provider: new_accredited_body) }
+        provider.courses.where(accrediting_provider: chosen_body).each { |c| c.update(accrediting_provider: new_accredited_body) }
       end
     when Symbol
       affected_courses = provider.courses.where(accrediting_provider: nil)
@@ -46,7 +46,7 @@ run do |opts, args, _cmd|
       puts affected_courses.pluck(:course_code).join(", ")
 
       if cli.agree("Continue? ")
-        provider.courses.where(accrediting_provider: nil).each {|c| c.update(accrediting_provider: provider) }
+        provider.courses.where(accrediting_provider: nil).each { |c| c.update(accrediting_provider: provider) }
       end
     end
 
