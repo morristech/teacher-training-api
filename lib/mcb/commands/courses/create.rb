@@ -25,8 +25,8 @@ class CourseEditor
     @courses_editor.edit(:maths)
     @courses_editor.edit(:english)
     @courses_editor.edit(:science)
-    ask_age_range
-    ask_course_code
+    @courses_editor.edit(:age_range)
+    @courses_editor.edit(:course_code)
 
     if confirm_creation?
       try_saving_course
@@ -37,17 +37,6 @@ class CourseEditor
     else
       puts "Aborting"
     end
-  end
-
-  def ask_age_range
-    @course.age_range = @cli.choose do |menu|
-      menu.prompt = "What's the level of the course?  "
-      menu.choices(*Course.age_ranges.keys)
-    end
-  end
-
-  def ask_course_code
-    @course.course_code = @cli.ask("Course code?  ")
   end
 
   def confirm_creation?
