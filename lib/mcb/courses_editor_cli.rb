@@ -22,6 +22,7 @@ module MCB
           "edit application opening date",
           "edit age range",
           "edit subjects",
+          "edit training locations",
         )
         menu.choice("sync course(s) to Find")
       end
@@ -122,6 +123,23 @@ module MCB
         end
       end
       selected_subjects
+    end
+
+    def ask_sites(course, provider)
+      finished = false
+      until finished do
+        @cli.choose do |menu|
+          menu.choice("exit") { finished = true }
+          provider.sites.order(:location_name).each do |site|
+            if site.in?(course.sites)
+              menu.choice("[x] #{site.description}") { course.remove_site!(site: site) }
+            else
+              menu.choice("[ ] #{site.description}") { course.add_site!(site: site) }
+            end
+          end
+        end
+        course.sites.reload
+      end
     end
 
   private

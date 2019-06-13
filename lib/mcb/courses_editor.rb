@@ -28,6 +28,8 @@ module MCB
 
         if choice == 'edit subjects'
           edit_subjects
+        elsif choice == 'edit training locations'
+          edit_sites
         elsif choice.start_with?("edit")
           attribute = choice.gsub("edit ", "").gsub(" ", "_").to_sym
           edit(attribute)
@@ -50,6 +52,10 @@ module MCB
 
     def edit_subjects
       @cli.ask_ucas_subjects(course.subjects) # the subjects are edited inline
+    end
+
+    def edit_sites
+      @cli.ask_sites(course, @provider) # the sites are edited inline
     end
 
   private
