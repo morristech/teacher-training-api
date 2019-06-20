@@ -32,6 +32,7 @@ class Course < ApplicationRecord
   include WithQualifications
   include ChangedAt
   include Courses::EditOptions
+  include AllocationSubjects
 
   after_initialize :set_defaults
 
