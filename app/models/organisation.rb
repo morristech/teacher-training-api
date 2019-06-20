@@ -14,6 +14,7 @@ class Organisation < ApplicationRecord
   has_many :users, through: :organisation_users, dependent: :destroy
 
   has_and_belongs_to_many :providers
+  has_many :nctl_organisations
 
   validates :name, presence: true
 

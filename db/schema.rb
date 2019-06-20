@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 2019_08_16_111150) do
     t.text "name"
     t.text "nctl_id", null: false
     t.integer "organisation_id"
+    t.integer "urn"
     t.index ["organisation_id"], name: "IX_nctl_organisation_organisation_id"
   end
 
