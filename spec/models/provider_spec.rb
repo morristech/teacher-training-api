@@ -62,6 +62,11 @@ describe Provider, type: :model do
     end
   end
 
+  describe 'organisations association' do
+    it { should have_and_belong_to_many(:organisations) }
+    it { should validate_length_of(:organisations) }
+  end
+
   describe 'changed_at' do
     it 'is set on create' do
       provider = Provider.create(

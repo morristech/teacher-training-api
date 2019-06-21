@@ -119,6 +119,10 @@ class Provider < ApplicationRecord
 
   validate :validate_enrichment_publishable, on: :publish
   validate :validate_enrichment
+  # For some reason organisations is a has_and_belongs_to_many. Until we fix
+  # this and set it to a singular relationship, we should make sure we don't
+  # get any extra data in our db.
+  validates_length_of :organisations, maximum: 1
 
   after_validation :remove_unnecessary_enrichments_validation_message
 
