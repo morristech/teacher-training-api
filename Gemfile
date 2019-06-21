@@ -86,6 +86,9 @@ gem 'discard'
 # Gov Notify
 gem 'govuk_notify_rails'
 
+# Generate reports
+gem 'spreadsheet_architect'
+
 group :development, :test do
   # add info about db structure to models and other files
   gem 'annotate'
