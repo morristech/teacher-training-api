@@ -34,7 +34,6 @@ class Course < ApplicationRecord
   include ChangedAt
   include Courses::EditOptions
   include AllocationSubjects
-  include AllocationsReport
 
   after_initialize :set_defaults
 
