@@ -29,7 +29,6 @@
 
 class Course < ApplicationRecord
   include Discard::Model
-  include SpreadsheetArchitect
   include WithQualifications
   include ChangedAt
   include Courses::EditOptions
