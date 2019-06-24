@@ -86,8 +86,8 @@ gem 'discard'
 # Gov Notify
 gem 'govuk_notify_rails'
 
-# Generate reports
-gem 'spreadsheet_architect'
+# For generating the allocation reports
+gem 'rubyXL'
 
 group :development, :test do
   # add info about db structure to models and other files
