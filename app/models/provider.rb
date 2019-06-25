@@ -243,14 +243,6 @@ class Provider < ApplicationRecord
     "[#{provider_code}] #{provider_name} (#{recruitment_cycle})"
   end
 
-  def nctl_organisation
-    if organisation.present?
-      organisation.nctl_organisation_for(self)
-    else
-      raise "Provider #{provider_code} is not mapped to an organisation"
-    end
-  end
-
   def copy_to_recruitment_cycle(new_recruitment_cycle)
     new_provider = new_recruitment_cycle
                       .providers
