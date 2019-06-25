@@ -106,6 +106,7 @@ class Provider < ApplicationRecord
            inverse_of: :accrediting_provider
 
   has_many :accrediting_providers, -> { distinct }, through: :courses
+  belongs_to :nctl_organisation, validate: false
 
   scope :changed_since, ->(timestamp) do
     if timestamp.present?
