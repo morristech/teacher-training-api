@@ -956,7 +956,7 @@ RSpec.describe Course, type: :model do
   end
 
   describe "#allocation_subjects" do
-    context "for a maths with physics subject" do
+    context "for a maths with physics course" do
       subject { build(:course, name: 'Physics with Mathematics', subjects: subjects) }
       let(:subjects) {
         [
@@ -967,6 +967,19 @@ RSpec.describe Course, type: :model do
       }
 
       its(:allocation_subjects) { should match_array(["Physics with mathematics"]) }
+    end
+
+    context "for PE and something else course" do
+      subject { build(:course, name: 'Physical Education with English', subjects: subjects) }
+      let(:subjects) {
+        [
+          create(:subject, subject_name: "English"),
+          create(:subject, subject_name: "Physical Education"),
+          create(:subject, subject_name: "Secondary"),
+        ]
+      }
+
+      its(:allocation_subjects) { should match_array(["Physical Education"]) }
     end
   end
 end
