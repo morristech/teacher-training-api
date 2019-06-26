@@ -54,6 +54,11 @@ module AllocationSubjects
       if subjects.count > 1
         if subjects.include? 'Primary with Maths'
           subjects.grep_v 'Primary'
+        elsif physics_with_maths_course?
+          subjects
+            .append("Physics with mathematics")
+            .grep_v("Physics")
+            .grep_v("Mathematics")
         elsif (m = subjects.find { |subject| name.match(/^#{subject}/) })
           [m.to_s]
         else
@@ -62,6 +67,11 @@ module AllocationSubjects
       else
         subjects
       end
+    end
+
+    def physics_with_maths_course?
+      self.name.in?(["Physics with Mathematics", "Physics with Maths"]) &&
+        (dfe_subjects.map(&:to_s) & ["Mathematics", "Physics"]).present?
     end
   end
 end

@@ -954,4 +954,19 @@ RSpec.describe Course, type: :model do
       it { is_expected.to_not be_valid }
     end
   end
+
+  describe "#allocation_subjects" do
+    context "for a maths with physics subject" do
+      subject { build(:course, name: 'Physics with Mathematics', subjects: subjects) }
+      let(:subjects) {
+        [
+          create(:subject, subject_name: "Mathematics"),
+          create(:subject, subject_name: "Physics"),
+          create(:subject, subject_name: "Secondary"),
+        ]
+      }
+
+      its(:allocation_subjects) { should match_array(["Physics with mathematics"]) }
+    end
+  end
 end
