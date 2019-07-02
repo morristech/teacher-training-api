@@ -318,6 +318,14 @@ module MCB
       ENV.key?('DB_HOSTNAME')
     end
 
+    def pageable_output(output)
+      ::Open3.pipeline_w('less -FX') do |io|
+        io.puts output
+      rescue Errno::EPIPE
+        nil
+      end
+    end
+
     def start_mcb_repl(start_argv)
       $mcb_repl_mode = true
 
