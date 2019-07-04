@@ -43,7 +43,7 @@ FactoryBot.define do
     accrediting_provider { 'N' }
     region_code { 'london' }
     organisations { build_list :organisation, 1 }
-    association(:recruitment_cycle)
+    recruitment_cycle { find_or_create :recruitment_cycle }
 
     trait :accredited_body do
       accrediting_provider { 'Y' }
