@@ -68,7 +68,14 @@ class Course < ApplicationRecord
   enum science: ENTRY_REQUIREMENT_OPTIONS, _suffix: :for_science
 
   belongs_to :provider
-  belongs_to :accrediting_provider, class_name: 'Provider', optional: true
+
+  belongs_to :accrediting_provider,
+             ->(c) { where(recruitment_cycle: c.recruitment_cycle) },
+             class_name: 'Provider',
+             foreign_key: :accrediting_provider_code,
+             primary_key: :provider_code,
+             inverse_of: :accredited_courses,
+             optional: true
 
   has_many :course_subjects
   has_many :subjects, through: :course_subjects
