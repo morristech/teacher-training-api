@@ -25,6 +25,7 @@
 #  last_published_at    :datetime
 #  changed_at           :datetime         not null
 #  recruitment_cycle_id :integer          not null
+#  nctl_organisation_id :bigint
 #
 
 FactoryBot.define do

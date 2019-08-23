@@ -25,6 +25,7 @@
 #  last_published_at    :datetime
 #  changed_at           :datetime         not null
 #  recruitment_cycle_id :integer          not null
+#  nctl_organisation_id :bigint
 #
 
 class Provider < ApplicationRecord
@@ -106,7 +107,7 @@ class Provider < ApplicationRecord
            inverse_of: :accrediting_provider
 
   has_many :accrediting_providers, -> { distinct }, through: :courses
-  belongs_to :nctl_organisation, validate: false
+  belongs_to :nctl_organisation, optional: true
 
   scope :changed_since, ->(timestamp) do
     if timestamp.present?
