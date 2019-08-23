@@ -39,7 +39,7 @@ class Organisation < ApplicationRecord
                               else
                                 nctl_organisations.school
                               end
-    return potential_organisations
+
     if potential_organisations.size <= 1
       potential_organisations.first
     else
@@ -58,7 +58,7 @@ class Organisation < ApplicationRecord
                               .to_a
                               .reject { |provider| provider.courses_count == 0 }
                           end
-    return potential_providers
+
     if potential_providers.size <= 1
       potential_providers.first
     else
