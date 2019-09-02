@@ -12,7 +12,6 @@ module API
       type 'providers'
 
       attributes :provider_code, :provider_name, :accredited_body?, :can_add_more_sites?, :content_status, :accredited_bodies
-
       attribute :address1 do
         @object.external_contact_info['address1']
       end

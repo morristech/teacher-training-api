@@ -9,7 +9,7 @@ describe 'PATCH /providers/:provider_code' do
   let(:permitted_params) { %i[accredited_bodies] }
   let(:recruitment_cycle) { find_or_create :recruitment_cycle }
   let(:organisation) { create :organisation }
-  let(:accrediting_provider) { create :provider }
+  let(:accrediting_provider) { create :provider, provider_name: 'ACME SCITT000001' }
   let(:course) { create :course, accrediting_provider: accrediting_provider }
   let(:courses) { [course] }
   let(:provider) do
@@ -173,7 +173,6 @@ describe 'PATCH /providers/:provider_code' do
 
         expect(provider.enrichments.draft.first.accrediting_provider_enrichments.count).to eq(courses.size)
         accrediting_provider_enrichment = provider.enrichments.draft.first.accrediting_provider_enrichments.first
-
         expect(accrediting_provider_enrichment.Description).to eq(new_description)
         expect(accrediting_provider_enrichment.UcasProviderCode).to eq(accrediting_provider.provider_code)
 
@@ -196,7 +195,6 @@ describe 'PATCH /providers/:provider_code' do
         expect {
           patch_request(enrichment_payload)
         }.to_not(change { provider.reload.enrichments.count })
-
         expect(provider.enrichments.draft.first.accrediting_provider_enrichments.count).to eq(courses.size)
 
         accrediting_provider_enrichment = provider.enrichments.draft.first.accrediting_provider_enrichments.first

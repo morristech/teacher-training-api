@@ -289,7 +289,9 @@ class Provider < ApplicationRecord
   end
 
   def accredited_bodies
-    accrediting_providers.map do |ap|
+    sorted_accrediting_providers = accrediting_providers.sort_by { |accredited_body| accredited_body[:provider_name] }
+
+    sorted_accrediting_providers.map do |ap|
       accrediting_provider_enrichment = latest_enrichment&.accrediting_provider_enrichment(ap.provider_code)
 
       # map() to this hash:

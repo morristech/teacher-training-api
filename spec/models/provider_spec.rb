@@ -444,6 +444,31 @@ describe Provider, type: :model do
         end
       end
     end
+
+    context "with multiple accrediting providers they should be sorted alphabetically" do
+      let(:provider) { create(:provider, courses: [course, course2]) }
+      let(:accrediting_provider) { build(:provider, provider_name: 'B') }
+      let(:accrediting_provider2) { build(:provider, provider_name: 'A') }
+      let(:course) { build(:course, accrediting_provider: accrediting_provider) }
+      let(:course2) { build(:course, accrediting_provider: accrediting_provider2) }
+
+      its(:length) { should be(2) }
+
+      context "the first provider" do
+        subject { provider.accredited_bodies.first }
+        its([:description]) { should eq("") }
+        its([:provider_code]) { should eq(accrediting_provider2.provider_code) }
+        its([:provider_name]) { should eq(accrediting_provider2.provider_name) }
+      end
+
+      context "the second provider" do
+        subject { provider.accredited_bodies.second }
+
+        its([:description]) { should eq("") }
+        its([:provider_code]) { should eq(accrediting_provider.provider_code) }
+        its([:provider_name]) { should eq(accrediting_provider.provider_name) }
+      end
+    end
   end
 
   describe '#copy_to_recruitment_cycle' do

@@ -102,7 +102,6 @@ module API
         return if accredited_bodies_params.values.none?
 
         enrichment = @provider.enrichments.find_or_initialize_draft
-
         enrichment.accrediting_provider_enrichments =
           accredited_bodies_params["accredited_bodies"].map do |accredited_body|
             {
