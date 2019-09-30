@@ -76,6 +76,7 @@ run do |opts, _args, _cmd|
     all_subjects = Subject.all
 
     courses.each do |broken_course|
+      puts "Fixing: #{broken_course[:provider_code]}, #{broken_course[:course_code]}"
       provider = recruitment_cycle.providers.find_by(provider_code: broken_course[:provider_code])
       course = provider.courses.find_by(course_code: broken_course[:course_code])
 
