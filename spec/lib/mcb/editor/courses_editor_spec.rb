@@ -753,6 +753,10 @@ describe MCB::Editor::CoursesEditor, :needs_audit_user do
         expect(output).to include("Aborting")
       end
     end
+
+    describe "runs the deletion" do
+      # todo
+    end
   end
 
   context "for an unauthorised user" do

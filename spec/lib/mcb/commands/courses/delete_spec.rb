@@ -1,9 +1,9 @@
 require "mcb_helper"
 
-describe "mcb courses create" do
-  def create_new_course_on(provider_code, in_recruitment_year: nil)
+describe "mcb courses delete" do
+  def delete_course_on(provider_code, in_recruitment_year: nil)
     args = in_recruitment_year.present? ? ["-r", in_recruitment_year] : []
-    $mcb.run(["courses", "create", provider_code] + args)
+    $mcb.run(["courses", "delete", provider_code] + args)
   end
 
   let(:provider_code) { "X12" }
@@ -18,17 +18,17 @@ describe "mcb courses create" do
     let!(:requester) { create(:user, email: email, organisations: provider.organisations) }
 
     it "launches the courses editor" do
-      allow(MCB::Editor::CoursesEditor).to receive(:new).and_return(instance_double(MCB::Editor::CoursesEditor, new_course_wizard: nil))
+      allow(MCB::Editor::CoursesEditor).to receive(:new)
+        .and_return(instance_double(MCB::Editor::CoursesEditor, delete: nil))
 
-      create_new_course_on(provider_code)
+      delete_course_on(provider_code)
 
       expect(MCB::Editor::CoursesEditor).to have_received(:new)
-      # todo: validate that delete was actually called
     end
 
     describe "trying to edit a course on a nonexistent provider" do
       it "raises an error" do
-        expect { create_new_course_on("ABC") }.to raise_error(ActiveRecord::RecordNotFound, /Couldn't find Provider/)
+        expect { delete_course_on("ABC") }.to raise_error(ActiveRecord::RecordNotFound, /Couldn't find Provider/)
       end
     end
 
@@ -43,11 +43,11 @@ describe "mcb courses create" do
 
       before do
         allow(MCB::Editor::CoursesEditor).to receive(:new)
-          .and_return(instance_double(MCB::Editor::CoursesEditor, new_course_wizard: nil))
+          .and_return(instance_double(MCB::Editor::CoursesEditor, delete: nil))
       end
 
       it "picks the provider in the current cycle by default" do
-        create_new_course_on(provider_code)
+        delete_course_on(provider_code)
 
         expect(MCB::Editor::CoursesEditor)
           .to have_received(:new)
@@ -55,7 +55,7 @@ describe "mcb courses create" do
       end
 
       it "picks the provider in the specified recruitment cycle when appropriate" do
-        create_new_course_on(provider_code, in_recruitment_year: next_recruitment_cycle.year)
+        delete_course_on(provider_code, in_recruitment_year: next_recruitment_cycle.year)
 
         expect(MCB::Editor::CoursesEditor)
           .to have_received(:new)
@@ -68,7 +68,7 @@ describe "mcb courses create" do
     let!(:requester) { create(:user, email: "someother@email.com") }
 
     it "raises an error" do
-      expect { create_new_course_on(provider_code) }.to raise_error(ActiveRecord::RecordNotFound, /Couldn't find User/)
+      expect { delete_course_on(provider_code) }.to raise_error(ActiveRecord::RecordNotFound, /Couldn't find User/)
     end
   end
 end

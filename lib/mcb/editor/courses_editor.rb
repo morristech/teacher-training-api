@@ -50,6 +50,10 @@ module MCB
         end
       end
 
+      def delete
+        throw "wip"
+      end
+
     protected
 
       def setup_cli
