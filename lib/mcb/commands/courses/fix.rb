@@ -7,7 +7,6 @@ run do |opts, _args, _cmd|
 
   courses = [
     { provider_code: "2C7", course_code: "E723" },
-    { provider_code: "1E5", course_code: "E256" },
     { provider_code: "1E5", course_code: "E234" },
     { provider_code: "1E5", course_code: "E356" },
     { provider_code: "1E5", course_code: "E589" },
@@ -56,7 +55,6 @@ run do |opts, _args, _cmd|
     { provider_code: "18Z", course_code: "E848" },
     { provider_code: "18Z", course_code: "E747" },
     { provider_code: "18Z", course_code: "E646" },
-    { provider_code: "18Z", course_code: "E545" },
     { provider_code: "16F", course_code: "E242" },
     { provider_code: "18Z", course_code: "E444" },
     { provider_code: "16F", course_code: "E141" },
