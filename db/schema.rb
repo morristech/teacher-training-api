@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_125612) do
     t.date "applications_open_from"
     t.boolean "is_send", default: false
     t.string "level"
+    t.string "state"
     t.index ["accrediting_provider_code"], name: "index_course_on_accrediting_provider_code"
     t.index ["changed_at"], name: "index_course_on_changed_at", unique: true
     t.index ["discarded_at"], name: "index_course_on_discarded_at"
