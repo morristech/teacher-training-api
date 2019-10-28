@@ -145,6 +145,9 @@ module API
       def update_enrichment
         return unless enrichment_params.values.any?
 
+        params[:course][:fee_uk_eu].gsub!(",", "") if params[:course][:fee_uk_eu].present?
+        params[:course][:fee_international].gsub!(",", "") if params[:course][:fee_international].present?
+
         enrichment = @course.enrichments.find_or_initialize_draft
         enrichment.assign_attributes(enrichment_params)
         enrichment.status = :draft if enrichment.rolled_over?
