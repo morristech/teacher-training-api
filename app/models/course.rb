@@ -197,6 +197,12 @@ class Course < ApplicationRecord
     state :rolled_over
     # validate has no published enrichments
 
+    event :add_draft do
+      transitions from: :new, to: :draft
+      transitions from: :published, to: :published_with_draft
+      # perform: add draft enrichment
+    end
+
     event :publish do
       transitions from: %i[draft rolled_over published_with_draft],
                   to: :published,
