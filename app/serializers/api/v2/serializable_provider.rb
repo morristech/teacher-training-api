@@ -87,6 +87,8 @@ module API
 
       has_many :sites
 
+      has_many :current_accredited_courses
+
       has_many :courses do
         meta do
           { count: @object.courses_count }
