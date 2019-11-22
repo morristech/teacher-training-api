@@ -5,8 +5,8 @@ describe "/api/v2/sessions", type: :request do
   let(:payload) { { email: user.email } }
   let(:token) do
     JWT.encode payload,
-               Settings.authentication.secret,
-               Settings.authentication.algorithm
+               MCBE.authentication.secret,
+               MCBE.authentication.algorithm
   end
   let(:credentials) do
     ActionController::HttpAuthentication::Token.encode_credentials(token)
@@ -52,7 +52,7 @@ describe "/api/v2/sessions", type: :request do
       let(:govuk_notify_request) do
         stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
            with(
-             body: { email_address: user.email, template_id: Settings.govuk_notify.welcome_email_template_id, personalisation: { first_name: user.first_name } }.to_json,
+             body: { email_address: user.email, template_id: MCBE.govuk_notify.welcome_email_template_id, personalisation: { first_name: user.first_name } }.to_json,
             ).
             to_return(status: 200, body: "{}", headers: {})
       end

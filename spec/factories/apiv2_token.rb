@@ -15,8 +15,8 @@ FactoryBot.register_strategy(:build_jwt, JWTStrategy)
 
 FactoryBot.define do
   factory :apiv2, class: OpenStruct do
-    secret    { Settings.authentication.secret }
-    algorithm { Settings.authentication.algorithm }
+    secret    { MCBE.authentication.secret }
+    algorithm { MCBE.authentication.algorithm }
     email     { "foobar@localhost" }
     payload   { { email: email } }
   end

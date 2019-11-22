@@ -24,8 +24,8 @@ private
   def decoded_token
     @decoded_token ||= JWT.decode(
       encoded_token,
-      Settings.authentication.secret,
-      Settings.authentication.algorithm,
+      MCBE.authentication.secret,
+      MCBE.authentication.algorithm,
     )
     (decoded_token_payload, _algorithm) = @decoded_token
 

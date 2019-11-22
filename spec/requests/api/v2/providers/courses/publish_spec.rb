@@ -19,7 +19,7 @@ describe "Publish API v2", type: :request do
     end
 
     before do
-      stub_request(:put, "#{Settings.search_api.base_url}/api/courses/")
+      stub_request(:put, "#{MCBE.search_api.base_url}/api/courses/")
         .to_return(
           status: status,
         )
@@ -85,7 +85,7 @@ describe "Publish API v2", type: :request do
             expect(subject).to have_http_status(:success)
           end
 
-          assert_requested :put, "#{Settings.search_api.base_url}/api/courses/"
+          assert_requested :put, "#{MCBE.search_api.base_url}/api/courses/"
 
           expect(course.reload.site_statuses.first).to be_status_running
           expect(course.site_statuses.first).to be_published_on_ucas
@@ -105,7 +105,7 @@ describe "Publish API v2", type: :request do
             expect(subject).to have_http_status(:success)
           end
 
-          assert_requested :put, "#{Settings.search_api.base_url}/api/courses/"
+          assert_requested :put, "#{MCBE.search_api.base_url}/api/courses/"
 
           expect(course.reload.site_statuses.first).to be_status_running
           expect(course.site_statuses.first).to be_published_on_ucas

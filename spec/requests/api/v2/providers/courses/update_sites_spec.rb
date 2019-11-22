@@ -47,7 +47,7 @@ describe "PATCH /providers/:provider_code/courses/:course_code with sites" do
   end
 
   let!(:sync_courses_request_stub) do
-    stub_request(:put, %r{#{Settings.search_api.base_url}/api/courses/})
+    stub_request(:put, %r{#{MCBE.search_api.base_url}/api/courses/})
       .to_return(
         status: 200,
         body: '{ "result": true }',

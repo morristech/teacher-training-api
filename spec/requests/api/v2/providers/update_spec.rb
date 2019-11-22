@@ -80,7 +80,7 @@ describe "PATCH /providers/:provider_code" do
   let(:search_api_status) { 200 }
   let(:sync_body) { WebMock::Matchers::AnyArgMatcher.new(nil) }
   let!(:sync_stub) do
-    stub_request(:put, %r{#{Settings.search_api.base_url}/api/courses/})
+    stub_request(:put, %r{#{MCBE.search_api.base_url}/api/courses/})
       .with(body: sync_body)
       .to_return(
         status: search_api_status,

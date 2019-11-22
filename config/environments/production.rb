@@ -1,5 +1,5 @@
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  # MCBE specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
   config.cache_classes = true
@@ -33,10 +33,10 @@ Rails.application.configure do
 
   # Logging
   config.log_tags = [:request_id] # Prepend all log lines with the following tags.
-  config.log_level = Settings.log_level
+  config.log_level = MCBE.log_level
 
-  if Settings.logstash.host && Settings.logstash.port
-    config.logger = LogStashLogger.new(Settings.logstash.to_h)
+  if MCBE.logstash.host && MCBE.logstash.port
+    config.logger = LogStashLogger.new(MCBE.logstash.to_h)
   else
     config.logger = ActiveSupport::Logger.new(STDOUT)
     config.logger.warn("logstash not configured, falling back to standard Rails logging")

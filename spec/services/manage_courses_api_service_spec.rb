@@ -9,11 +9,11 @@ describe ManageCoursesAPIService do
     end
 
     it "uses the configured URL as the base" do
-      expect(subject.url_prefix.to_s).to eq(Settings.manage_api.base_url + "/")
+      expect(subject.url_prefix.to_s).to eq(MCBE.manage_api.base_url + "/")
     end
 
     it "uses the configured secret for the bearer token" do
-      expect(subject.headers["Authorization"]).to eq("Bearer #{Settings.manage_api.secret}")
+      expect(subject.headers["Authorization"]).to eq("Bearer #{MCBE.manage_api.secret}")
     end
   end
 
@@ -24,7 +24,7 @@ describe ManageCoursesAPIService do
     let(:body) { { "email": email } }
 
     before do
-      stub_request(:post, "#{Settings.manage_api.base_url}/#{endpoint}")
+      stub_request(:post, "#{MCBE.manage_api.base_url}/#{endpoint}")
         .with { |req| req.body == body.to_json }
         .to_return(
           status: 200,

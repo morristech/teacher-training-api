@@ -1,4 +1,4 @@
-if Settings.logstash.host && Settings.logstash.port
+if MCBE.logstash.host && MCBE.logstash.port
   logstash_formatter = Proc.new do |event|
     # The value here appears to break logging to logstash / elasticsearch
     event["duration"] = event["duration_ms"]
@@ -13,6 +13,6 @@ if Settings.logstash.host && Settings.logstash.port
     end
   end
 
-  log_stash = LogStashLogger.new(Settings.logstash.to_h.merge(customize_event: logstash_formatter))
+  log_stash = LogStashLogger.new(MCBE.logstash.to_h.merge(customize_event: logstash_formatter))
   SemanticLogger.add_appender(logger: log_stash, level: :info, formatter: :json)
 end

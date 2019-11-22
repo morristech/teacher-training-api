@@ -6,7 +6,7 @@ describe WelcomeEmailMailer, type: :mailer do
     before { mail }
 
     it "Sends an email with the correct template" do
-      expect(mail.govuk_notify_template).to eq(Settings.govuk_notify.welcome_email_template_id)
+      expect(mail.govuk_notify_template).to eq(MCBE.govuk_notify.welcome_email_template_id)
     end
 
     it "Sends an email to the correct email address" do

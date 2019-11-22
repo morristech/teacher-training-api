@@ -96,7 +96,7 @@ describe MCB::Editor::CoursesEditor, :needs_audit_user do
         let!(:another_course) { create(:course, provider: provider) }
         let(:course_codes) { [course_code, another_course.course_code] }
         let!(:search_api_request) do
-          stub_request(:put, "#{Settings.search_api.base_url}/api/courses/")
+          stub_request(:put, "#{MCBE.search_api.base_url}/api/courses/")
             .with { |req| req.body == body.to_json }
             .to_return(
               status: 200,

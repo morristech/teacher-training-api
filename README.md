@@ -19,7 +19,7 @@
 
 ## Setting up the app in development
 
-### Settings
+### MCBE
 
 If you are going to login with a user who hasn't recieved the welcome email - you will need to set the following settings to their correct values in `config/settings/development.local.yml`:
 
@@ -141,7 +141,7 @@ eyJhbGciOiJIUzI1NiJ9.IntcImVtYWlsXCI6XCJ1c2VyQGV4YW1wbGUuY29tXCJ9Ig.f9kNofCO0u35
 Where `-S secret` is the secret. In development, the secret should be set to
 `secret` by default on backend and frontend.
 
-## Settings vs config vs Environment variables
+## MCBE vs config vs Environment variables
 
 Refer to the [the config gem](https://github.com/railsconfig/config#accessing-the-settings-object) to understand the `file based settings` loading order.
 
@@ -159,7 +159,7 @@ export SETTINGS__FILE__BASED__SETTINGS__ENV1="machine wins"
 ```
 
 ```ruby
-puts Settings.file.based.setting.env1
+puts MCBE.file.based.setting.env1
 
 machine wins
 ```

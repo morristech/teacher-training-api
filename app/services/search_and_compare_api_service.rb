@@ -2,11 +2,11 @@ module SearchAndCompareAPIService
   class Connection
     class << self
       def api
-        Faraday.new(url: Settings.search_api.base_url) do |faraday|
+        Faraday.new(url: MCBE.search_api.base_url) do |faraday|
           faraday.response :logger unless Rails.env.test?
           faraday.adapter Faraday.default_adapter
           faraday.headers["Content-Type"] = "application/json; charset=utf-8;"
-          faraday.headers["Authorization"] = "Bearer #{Settings.search_api.secret}"
+          faraday.headers["Authorization"] = "Bearer #{MCBE.search_api.secret}"
           faraday.headers["X-Request-ID"] = RequestStore.store[:request_id]
         end
       end

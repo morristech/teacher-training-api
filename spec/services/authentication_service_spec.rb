@@ -21,8 +21,8 @@ describe AuthenticationService do
     def encode_token(payload)
       JWT.encode(
         payload,
-        Settings.authentication.secret,
-        Settings.authentication.algorithm,
+        MCBE.authentication.secret,
+        MCBE.authentication.algorithm,
       )
     end
 

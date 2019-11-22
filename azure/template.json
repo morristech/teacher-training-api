@@ -343,7 +343,7 @@
           "runtimeStack": {
             "value": "[variables('appServiceRuntimeStack')]"
           },
-          "appServiceAppSettings": {
+          "appServiceAppMCBE": {
             "value": [
               {
                 "name": "APPINSIGHTS_INSTRUMENTATIONKEY",

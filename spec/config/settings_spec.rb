@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Settings do
+describe MCBE do
   describe "authentication" do
     subject do
       YAML.load_file(Rails.root.join("config", "settings.yml"))

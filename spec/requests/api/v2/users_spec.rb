@@ -5,8 +5,8 @@ describe "/api/v2/users", type: :request do
   let(:payload) { { email: user.email } }
   let(:token) do
     JWT.encode payload,
-               Settings.authentication.secret,
-               Settings.authentication.algorithm
+               MCBE.authentication.secret,
+               MCBE.authentication.algorithm
   end
   let(:credentials) do
     ActionController::HttpAuthentication::Token.encode_credentials(token)

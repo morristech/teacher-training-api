@@ -54,6 +54,6 @@ def get_token_from_opts(opts)
     opts[:token]
   else
     init_rails(opts)
-    Settings.system_authentication_token
+    MCBE.system_authentication_token
   end
 end

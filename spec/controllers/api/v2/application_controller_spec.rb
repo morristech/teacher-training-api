@@ -2,12 +2,12 @@ require "rails_helper"
 
 describe API::V2::ApplicationController, type: :controller do
   describe "#authenticate" do
-    let(:secret) { Settings.authentication.secret }
+    let(:secret) { MCBE.authentication.secret }
     let(:encoded_token) do
       JWT.encode(
         payload,
         secret,
-        Settings.authentication.algorithm,
+        MCBE.authentication.algorithm,
       )
     end
     let(:bearer_token) { "Bearer #{encoded_token}" }
@@ -47,11 +47,11 @@ describe API::V2::ApplicationController, type: :controller do
       let(:email) { "manage_courses@api.com" }
       let(:sign_in_user_id) { "manage_courses_api" }
       let(:existing_user) { create(:user, email: email, sign_in_user_id: sign_in_user_id) }
-      let(:secret) { Settings.authentication.secret = "SETTINGS:MANAGE_BACKEND:SECRET" }
+      let(:secret) { MCBE.authentication.secret = "SETTINGS:MANAGE_BACKEND:SECRET" }
 
       before do
         existing_user
-        Settings.authentication.secret = "SETTINGS:MANAGE_BACKEND:SECRET"
+        MCBE.authentication.secret = "SETTINGS:MANAGE_BACKEND:SECRET"
       end
 
       # NOTES:

@@ -6,8 +6,8 @@ describe "PATCH /api/v2/users/:id/accept_transition_screen", type: :request do
 
   let(:token) do
     JWT.encode payload,
-               Settings.authentication.secret,
-               Settings.authentication.algorithm
+               MCBE.authentication.secret,
+               MCBE.authentication.algorithm
   end
 
   let(:credentials) do

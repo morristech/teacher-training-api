@@ -1,11 +1,11 @@
 module ManageCoursesAPIService
   class Connection
     def self.api
-      Faraday.new(url: Settings.manage_api.base_url) do |faraday|
+      Faraday.new(url: MCBE.manage_api.base_url) do |faraday|
         faraday.response :logger unless Rails.env.test?
         faraday.adapter Faraday.default_adapter
         faraday.headers["Content-Type"] = "application/json"
-        faraday.headers["Authorization"] = "Bearer #{Settings.manage_api.secret}"
+        faraday.headers["Authorization"] = "Bearer #{MCBE.manage_api.secret}"
       end
     end
   end

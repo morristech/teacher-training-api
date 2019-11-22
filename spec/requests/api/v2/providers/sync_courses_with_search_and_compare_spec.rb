@@ -26,7 +26,7 @@ describe "Courses API v2", type: :request do
     let(:status) { 200 }
     let(:stubbed_request_body) { WebMock::Matchers::AnyArgMatcher.new(nil) }
     let(:stubbed_request) do
-      stub_request(:put, "#{Settings.search_api.base_url}/api/courses/")
+      stub_request(:put, "#{MCBE.search_api.base_url}/api/courses/")
         .with(body: stubbed_request_body)
         .to_return(
           status: status,
@@ -88,7 +88,7 @@ describe "Courses API v2", type: :request do
             end
 
             expect(WebMock)
-              .to have_requested(:put, "#{Settings.search_api.base_url}/api/courses/")
+              .to have_requested(:put, "#{MCBE.search_api.base_url}/api/courses/")
           end
         end
       end

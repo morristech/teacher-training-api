@@ -22,7 +22,7 @@ describe "Courses API v2", type: :request do
     let(:course) { create(:course, level: :primary, provider: provider, enrichments: [course_enrichment], site_statuses: [site_status], subjects: [dfe_subject]) }
 
     before do
-      stub_request(:put, %r{#{Settings.search_api.base_url}/api/courses/})
+      stub_request(:put, %r{#{MCBE.search_api.base_url}/api/courses/})
         .to_return(
           status: search_api_status,
         )
@@ -43,7 +43,7 @@ describe "Courses API v2", type: :request do
       end
 
       expect(WebMock)
-        .to have_requested(:put, "#{Settings.search_api.base_url}/api/courses/")
+        .to have_requested(:put, "#{MCBE.search_api.base_url}/api/courses/")
     end
 
     context "when unauthenticated" do

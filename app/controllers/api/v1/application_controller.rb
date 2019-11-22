@@ -11,7 +11,7 @@ module API
       end
 
       def check_recruitment_cycle_is_current_or_next_year
-        current_year = Settings.current_recruitment_cycle_year
+        current_year = MCBE.current_recruitment_cycle_year
         next_year = current_year + 1
 
         requested_year = params[:recruitment_year]

@@ -9,11 +9,11 @@ describe SearchAndCompareAPIService do
     end
 
     it "uses the configured URL as the base" do
-      expect(subject.url_prefix.to_s).to eq(Settings.search_api.base_url + "/")
+      expect(subject.url_prefix.to_s).to eq(MCBE.search_api.base_url + "/")
     end
 
     it "uses the configured secret for the bearer token" do
-      expect(subject.headers["Authorization"]).to eq("Bearer #{Settings.search_api.secret}")
+      expect(subject.headers["Authorization"]).to eq("Bearer #{MCBE.search_api.secret}")
     end
 
     it "uses the RequestStore for the request_id" do
@@ -49,7 +49,7 @@ describe SearchAndCompareAPIService do
     let(:http_verb) { :put }
 
     before do
-      stub_request(http_verb, "#{Settings.search_api.base_url}/api/courses/")
+      stub_request(http_verb, "#{MCBE.search_api.base_url}/api/courses/")
         .with { |req| req.body == body.to_json }
         .to_return(
           status: status,

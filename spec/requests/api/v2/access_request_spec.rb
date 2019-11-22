@@ -16,8 +16,8 @@ describe "Access Request API V2", type: :request do
   }
   let(:token) do
     JWT.encode payload,
-               Settings.authentication.secret,
-               Settings.authentication.algorithm
+               MCBE.authentication.secret,
+               MCBE.authentication.algorithm
   end
   let(:credentials) do
     ActionController::HttpAuthentication::Token.encode_credentials(token)

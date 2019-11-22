@@ -24,7 +24,7 @@ describe "mcb providers sync_to_find" do
   end
 
   def stub_manage_api_request(provider_code)
-    stub_request(:post, "#{Settings.manage_api.base_url}/api/Publish/internal/courses/#{provider_code}")
+    stub_request(:post, "#{MCBE.manage_api.base_url}/api/Publish/internal/courses/#{provider_code}")
       .with { |req| req.body == { "email": email }.to_json }
       .to_return(
         status: 200,
