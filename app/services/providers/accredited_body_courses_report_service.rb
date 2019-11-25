@@ -50,6 +50,5 @@ module Providers
       end
       course_data
     end
-
   end
 end
