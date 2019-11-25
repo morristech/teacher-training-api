@@ -44,5 +44,9 @@ private
         copy_site_to_provider_service: get(:sites, :copy_to_provider),
       )
     end
+
+    define(:providers, :reports) do
+      Providers::ReportService.new
+    end
   end
 end
