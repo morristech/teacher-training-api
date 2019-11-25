@@ -35,6 +35,10 @@ class Site < ApplicationRecord
 
   belongs_to :provider
 
+  # geocoded_by :full_street_address
+  #
+  # after_validation :geocode
+
   validates :location_name, uniqueness: { scope: :provider_id }
   validates :location_name,
             :address1,
@@ -47,6 +51,10 @@ class Site < ApplicationRecord
 
   def recruitment_cycle
     provider.recruitment_cycle
+  end
+
+  def full_street_address
+    [address1, address2, address3, address4, postcode].compact.join(', ')
   end
 
   def assign_code

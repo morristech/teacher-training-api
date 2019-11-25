@@ -82,4 +82,11 @@ describe Site, type: :model do
     subject { build(:site, location_name: "Foo", code: "1") }
     its(:to_s) { should eq "Foo (code: 1)" }
   end
+
+  describe 'geolocation' do
+    it 'geocodes with geocoding' do
+      expect(subject.latitude).to eq geocoder_stub('nonexistent').latitude
+      expect(subject.longitude).to eq geocoder_stub('nonexistent').longitude
+    end
+  end
 end

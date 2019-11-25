@@ -4,6 +4,7 @@ require "super_diff/rspec"
 require "fakefs/spec_helpers"
 require "webmock/rspec"
 require "audited-rspec"
+require "geocoder"
 require "simplecov"
 
 SimpleCov.minimum_coverage 75
@@ -38,6 +39,7 @@ Dir["./spec/support/**/*.rb"].each { |file| require file }
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  # config.include GeocoderStub
   # Reduce noise in console when running specs in parallel
   config.silence_filter_announcements = true if ENV["TEST_ENV_NUMBER"]
   # rspec-expectations config goes here. You can use an alternate
