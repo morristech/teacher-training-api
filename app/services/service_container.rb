@@ -45,8 +45,8 @@ private
       )
     end
 
-    define(:providers, :reports) do
-      Providers::ReportService.new
+    define(:providers, :accredited_body_courses_report) do
+      Providers::AccreditedBodyCoursesReportService.new
     end
   end
 end

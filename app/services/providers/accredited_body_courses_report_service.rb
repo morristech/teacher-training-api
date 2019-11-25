@@ -1,6 +1,6 @@
 module Providers
-  class ReportService
-    def get_accredited_courses(provider)
+  class AccreditedBodyCoursesReportService
+    def execute(provider)
       get_course_data provider
     end
 

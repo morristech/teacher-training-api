@@ -11,8 +11,8 @@ run do |opts, args, _cmd|
     error "Provider with code '#{code}' not found"
   else
     services = ServiceContainer.new
-    report_service = services.get(:providers, :reports)
-    course_data = report_service.get_accredited_courses(provider)
+    report_service = services.get(:providers, :accredited_body_courses_report)
+    course_data = report_service.execute(provider)
     write_course_data(course_data, opts[:"csv-file"])
   end
 end
