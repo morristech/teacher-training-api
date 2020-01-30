@@ -91,9 +91,15 @@
 #                                                                        PUT    /api/v2/access_requests/:id(.:format)                                                                                                    api/v2/access_requests#update
 #                                                                        DELETE /api/v2/access_requests/:id(.:format)                                                                                                    api/v2/access_requests#destroy
 #                                                api_v2_build_new_course GET    /api/v2/build_new_course(.:format)                                                                                                       api/v2/courses#build_new
+#                                       api_v3_recruitment_cycle_courses GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/courses(.:format)                                                                     api/v3/course_searches#index
+#                                                                        POST   /api/v3/recruitment_cycles/:recruitment_cycle_year/courses(.:format)                                                                     api/v3/course_searches#create
+#                                        api_v3_recruitment_cycle_course GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/courses/:id(.:format)                                                                 api/v3/course_searches#show
+#                                                                        PATCH  /api/v3/recruitment_cycles/:recruitment_cycle_year/courses/:id(.:format)                                                                 api/v3/course_searches#update
+#                                                                        PUT    /api/v3/recruitment_cycles/:recruitment_cycle_year/courses/:id(.:format)                                                                 api/v3/course_searches#update
+#                                                                        DELETE /api/v3/recruitment_cycles/:recruitment_cycle_year/courses/:id(.:format)                                                                 api/v3/course_searches#destroy
 #                              api_v3_recruitment_cycle_provider_courses GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers/:provider_code/courses(.:format)                                            api/v3/courses#index
 #                               api_v3_recruitment_cycle_provider_course GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers/:provider_code/courses/:code(.:format)                                      api/v3/courses#show
-#                                       api_v3_recruitment_cycle_courses GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers/courses(.:format)                                                           api/v3/courses#index
+#                                                                        GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers/courses(.:format)                                                           api/v3/courses#index
 #                                     api_v3_recruitment_cycle_providers GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers(.:format)                                                                   api/v3/providers#index
 #                                      api_v3_recruitment_cycle_provider GET    /api/v3/recruitment_cycles/:recruitment_cycle_year/providers/:code(.:format)                                                             api/v3/providers#show
 #                                               api_v3_recruitment_cycle GET    /api/v3/recruitment_cycles/:year(.:format)                                                                                               api/v3/recruitment_cycles#show
@@ -175,6 +181,7 @@ Rails.application.routes.draw do
       resources :recruitment_cycles,
                 only: :show,
                 param: :year do
+        resources :courses, controller: "course_searches"
         resources :providers,
                   only: %i[index show],
                   param: :code do
