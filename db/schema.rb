@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_15_141035) do
+ActiveRecord::Schema.define(version: 2020_02_04_155238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_buffercache"
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_141035) do
     t.integer "subject_id"
     t.datetime "created_at", precision: 6
     t.datetime "updated_at", precision: 6
+    t.boolean "main", default: false
     t.index ["course_id", "subject_id"], name: "index_course_subject_on_course_id_and_subject_id", unique: true
     t.index ["course_id"], name: "index_course_subject_on_course_id"
     t.index ["subject_id"], name: "index_course_subject_on_subject_id"

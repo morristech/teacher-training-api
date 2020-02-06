@@ -171,6 +171,16 @@ module API
         @course.name = @course.generate_name
       end
 
+      def update_subjects_new
+        return if subject_ids.nil?
+
+        @course.subjects = Subject.where(id: subject_ids)
+        @course.course_subjects.select { |cs| cs.subject_id == subject_ids.first.to_i }.first.main = true
+        @course.subjects = @course.course_subjects.sort_by { |cs| cs.main ? 0 : 1 }.map(&:subject)
+
+        @course.name = @course.generate_name
+      end
+
       def build_provider
         @provider = @recruitment_cycle.providers.find_by!(
           provider_code: params[:provider_code].upcase,
@@ -192,7 +202,7 @@ module API
       def build_new_course
         @course = Course.new(provider: @provider)
         @course.assign_attributes(course_params)
-        update_subjects
+        update_subjects_new
         update_sites
         update_further_education_fields if @course.level == "further_education"
         @course.name = @course.generate_name
