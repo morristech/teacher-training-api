@@ -22,7 +22,7 @@ class RecruitmentCycle < ApplicationRecord
 
   class << self
     def current_recruitment_cycle
-      find_by(year: Settings.current_recruitment_cycle_year)
+      find_by!(year: Settings.current_recruitment_cycle_year)
     end
     alias_method :current, :current_recruitment_cycle
 
