@@ -56,7 +56,23 @@ module API
         authorize @provider, :can_list_courses?
         authorize Course
 
-        render jsonapi: @provider.courses, include: params[:include], class: CourseSerializersService.new.execute
+        @courses = @provider.courses
+        if params[:filter]&.has_key?(:accrediting_provider_code)
+          @courses = @courses.where(
+            accrediting_provider_code: params[:filter][:accrediting_provider_code],
+          )
+        end
+
+        # course_search = CourseSearchV2Service.call(
+        #   filter: params[:filter],
+        #   sort: params[:sort],
+        #   course_scope: @provider.courses
+        # )
+
+        render jsonapi: @courses,
+               fields: fields_param,
+               include: params[:include],
+               class: CourseSerializersService.new.execute
       end
 
       def show
