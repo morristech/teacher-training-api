@@ -276,6 +276,11 @@ describe "Providers API v2", type: :request do
                 "included" => false,
               },
             },
+            "current_accredited_courses" => {
+              "meta" => {
+                "included" => false
+              }
+            },
             "courses" => {
               "meta" => {
                 "count" => provider.courses.count,
@@ -360,6 +365,11 @@ describe "Providers API v2", type: :request do
                     "id" => site.id.to_s,
                   },
                 ],
+              },
+              "current_accredited_courses" => {
+                "meta" => {
+                  "included" => false
+                }
               },
               "courses" => {
                 "meta" => {
