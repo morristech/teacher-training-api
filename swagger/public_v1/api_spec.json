@@ -17,6 +17,77 @@
   ],
   "components": {
     "schemas": {
+      "Sort": {
+        "type": "array",
+        "example": "provider.provider_name,name",
+        "items": {
+          "type": "string",
+          "example": "name"
+        }
+      },
+      "Filter": {
+        "type": "object",
+        "example": "",
+        "properties": {
+          "has_vacancies": {
+            "description": "Return courses that only have vacancies?",
+            "type": "string",
+            "example": "true"
+          },
+          "funding": {
+            "description": "Return courses that are salary funded",
+            "type": "string",
+            "example": "salary"
+          },
+          "qualification": {
+            "description": "Search courses based on the award given on course completion",
+            "type": "array",
+            "example": "qts,pgce,pgde",
+            "items": {
+              "type": "string",
+              "example": "qts"
+            }
+          },
+          "study_type": {
+            "description": "Search full time or part time courses or both",
+            "type": "array",
+            "example": "full_time,part_time",
+            "items": {
+              "type": "string",
+              "example": "full_time"
+            }
+          },
+          "subjects": {
+            "description": "Returns courses that include at least one of the given subjects",
+            "type": "array",
+            "example": "00,01,W1",
+            "items": {
+              "type": "string",
+              "example": "W1"
+            }
+          },
+          "send_courses": {
+            "description": "Only return courses that have a SEND specialism",
+            "type": "string",
+            "example": "true"
+          },
+          "latitude": {
+            "description": "Latitude of origin when performing a search by radius",
+            "type": "number",
+            "example": 54.9753348
+          },
+          "longitude": {
+            "description": "Longitude of origin when performing a search by radius",
+            "type": "number",
+            "example": -1.6100477
+          },
+          "radius": {
+            "description": "Search radius in miles from given latitude and longitude",
+            "type": "number",
+            "example": 20
+          }
+        }
+      },
       "CourseAttributes": {
         "type": "object",
         "required": [
@@ -584,20 +655,25 @@
           {
             "name": "filter",
             "in": "query",
-            "style": "deepObject",
-            "required": false,
             "schema": {
-              "type": "object"
-            }
+              "$ref": "#/components/schemas/Filter"
+            },
+            "style": "deepObject",
+            "explode": true,
+            "description": "Refine courses to return",
+            "required": false
           },
           {
             "name": "sort",
             "in": "query",
-            "style": "deepObject",
-            "required": false,
             "schema": {
-              "type": "object"
-            }
+              "$ref": "#/components/schemas/Sort"
+            },
+            "style": "form",
+            "explode": false,
+            "example": "provider.provider_name,name",
+            "description": "Field(s) to sort the courses by",
+            "required": false
           }
         ],
         "responses": {
