@@ -31,6 +31,7 @@ class CourseSearchService
     scope = scope.with_vacancies if has_vacancies?
     scope = scope.with_study_modes(study_types) if study_types.any?
     scope = scope.with_subjects(subject_codes) if subject_codes.any?
+    scope = scope.without_subjects(negated_subject_codes) if negated_subject_codes.any?
     scope = scope.with_provider_name(provider_name) if provider_name.present?
     scope = scope.with_send if send_courses_filter?
     scope = scope.within(filter[:radius], origin: origin) if locations_filter?
@@ -134,9 +135,17 @@ private
   end
 
   def subject_codes
-    return [] if filter[:subjects].blank?
+    return [] if filter[:subjects].blank? ||
+      prefixed_with_minus?(filter[:subjects])
 
     filter[:subjects].split(",")
+  end
+
+  def negated_subject_codes
+    return [] if filter[:subjects].blank? ||
+      !prefixed_with_minus?(filter[:subjects])
+
+    filter[:subjects][1..-1].split(",")
   end
 
   def provider_name
@@ -147,5 +156,9 @@ private
 
   def send_courses_filter?
     filter[:send_courses].to_s.downcase == "true"
+  end
+
+  def prefixed_with_minus?(filter_params)
+    !!filter_params.match(/^-/)
   end
 end

@@ -325,6 +325,64 @@ describe CourseSearchService do
           expect(subject).to eq(expected_scope)
         end
       end
+
+      context "when prefixed with minus" do
+        let(:filter) { { subjects: "-A1" } }
+        let(:expected_scope) { double }
+
+        it "doesn't add the scope" do
+          expect(findable_scope).not_to receive(:with_subjects)
+          expect(findable_scope).to receive(:without_subjects).with(%w(A1)).and_return(distinct_scope)
+          expect(distinct_scope).to receive(:distinct).and_return(expected_scope)
+          expect(subject).to eq(expected_scope)
+        end
+      end
+    end
+
+    describe "filter[-subjects]" do
+      context "a single subject code" do
+        let(:filter) { { subjects: "-A1" } }
+        let(:expected_scope) { double }
+
+        it "adds the subject scope" do
+          expect(findable_scope).to receive(:without_subjects).with(%w(A1)).and_return(distinct_scope)
+          expect(distinct_scope).to receive(:distinct).and_return(expected_scope)
+          expect(subject).to eq(expected_scope)
+        end
+      end
+
+      context "multiple subject codes" do
+        let(:filter) { { subjects: "-A1,B2" } }
+        let(:expected_scope) { double }
+
+        it "adds the subject scope" do
+          expect(findable_scope).to receive(:without_subjects).with(%w(A1 B2)).and_return(distinct_scope)
+          expect(distinct_scope).to receive(:distinct).and_return(expected_scope)
+          expect(subject).to eq(expected_scope)
+        end
+      end
+
+      context "when absent" do
+        let(:filter) { {} }
+
+        it "doesn't add the scope" do
+          expect(findable_scope).not_to receive(:without_subjects)
+          expect(findable_scope).to receive(:distinct).and_return(expected_scope)
+          expect(subject).to eq(expected_scope)
+        end
+      end
+
+      context "when not prefixed with minus" do
+        let(:filter) { { subjects: "A1" } }
+        let(:expected_scope) { double }
+
+        it "doesn't add the scope" do
+          expect(findable_scope).not_to receive(:without_subjects)
+          expect(findable_scope).to receive(:with_subjects).with(%w(A1)).and_return(distinct_scope)
+          expect(distinct_scope).to receive(:distinct).and_return(expected_scope)
+          expect(subject).to eq(expected_scope)
+        end
+      end
     end
 
     describe "filter[send_courses]" do
