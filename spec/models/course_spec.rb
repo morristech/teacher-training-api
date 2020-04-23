@@ -772,6 +772,40 @@ describe Course, type: :model do
       end
     end
 
+    describe ".without_subjects" do
+      let(:physical_education) { find_or_create(:secondary_subject, :physical_education) }
+      let(:biology) { find_or_create(:secondary_subject, :biology) }
+      let(:science) { find_or_create(:secondary_subject, :science) }
+
+      let(:pe_course) { create(:course, level: :secondary, subjects: [physical_education]) }
+      let(:biology_course) { create(:course, level: :secondary, subjects: [biology]) }
+      let(:science_course) { create(:course, level: :secondary, subjects: [science]) }
+
+      subject { described_class.without_subjects(subject_codes) }
+
+      before do
+        pe_course
+        biology_course
+        science_course
+      end
+
+      context "a single subject code" do
+        let(:subject_codes) { physical_education.subject_code }
+
+        it "returns courses except physical education" do
+          expect(subject).to contain_exactly(biology_course, science_course)
+        end
+      end
+
+      context "multiple subject codes" do
+        let(:subject_codes) { [physical_education.subject_code, biology.subject_code] }
+
+        it "returns courses except physical education and biology" do
+          expect(subject).to contain_exactly(science_course)
+        end
+      end
+    end
+
     describe ".with_funding_types" do
       let(:fee_course_higher_education) { create(:course, :with_higher_education) }
       let(:fee_course_scitt) { create(:course, :with_scitt) }

@@ -212,6 +212,10 @@ class Course < ApplicationRecord
     joins(:subjects).merge(Subject.with_subject_codes(subject_codes))
   end
 
+  scope :without_subjects, ->(subject_codes) do
+    includes(:subjects).where.not(subject: { subject_code: subject_codes })
+  end
+
   scope :with_qualifications, ->(qualifications) do
     where(qualification: qualifications)
   end
