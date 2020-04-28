@@ -25,7 +25,6 @@ class CourseSearchService
       scope = scope.select("course.*, distance")
       scope = scope.order(:distance)
     end
-
     scope = scope.with_salary if funding_filter_salary?
     scope = scope.with_qualifications(qualifications) if qualifications.any?
     scope = scope.with_vacancies if has_vacancies?

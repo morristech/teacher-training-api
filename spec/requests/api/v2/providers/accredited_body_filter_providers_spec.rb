@@ -120,7 +120,7 @@ describe "AccreditedBody API v2", type: :request do
       end
     end
 
-    describe "subject type filter" do
+    describe "subject filter" do
       let(:physical_education) { find_or_create(:secondary_subject, :physical_education) }
       let(:biology) { find_or_create(:secondary_subject, :biology) }
 
@@ -192,9 +192,179 @@ describe "AccreditedBody API v2", type: :request do
       end
     end
 
+    describe "negated subject filter" do
+      let(:physical_education) { find_or_create(:secondary_subject, :physical_education) }
+      let(:biology) { find_or_create(:secondary_subject, :biology) }
+
+      let(:pe_course) do
+        create(:course,
+               level: :secondary,
+               provider: training_provider_1,
+               subjects: [physical_education],
+               site_statuses: [build(:site_status, :findable, site: build(:site))],
+               accrediting_provider: accredited_provider)
+      end
+      let(:biology_course) do
+        create(:course,
+               level: :secondary,
+               provider: training_provider_1,
+               subjects: [biology],
+               site_statuses: [build(:site_status, :findable, site: build(:site))],
+               accrediting_provider: accredited_provider)
+      end
+
+      context "with training provider offering negated course" do
+        let(:filters) { "?filter[subjects]=-#{physical_education.subject_code}" }
+
+        before do
+          pe_course
+          biology_course
+        end
+
+        it "doesn't return the provider" do
+          get request_path, headers: { "HTTP_AUTHORIZATION" => credentials }
+          json_response = JSON.parse(response.body)
+          provider_hashes = json_response["data"]
+          expect(provider_hashes.count).to eq(0)
+        end
+      end
+
+      context "with training providers offering courses that match multiple negated subject" do
+        let(:training_provider_2) { create(:provider) }
+
+        let(:physical_education) { find_or_create(:secondary_subject, :physical_education) }
+        let(:biology) { find_or_create(:secondary_subject, :biology) }
+
+        let(:pe_course) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_1,
+                 subjects: [physical_education],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+        let(:biology_course) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_2,
+                 subjects: [physical_education],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+
+        let(:filters) { "?filter[subjects]=-#{physical_education.subject_code},#{biology.subject_code}" }
+
+        before do
+          pe_course
+          biology_course
+        end
+
+        it "is returns the provider" do
+          get request_path, headers: { "HTTP_AUTHORIZATION" => credentials }
+          json_response = JSON.parse(response.body)
+          provider_hashes = json_response["data"]
+          expect(provider_hashes.count).to eq(0)
+        end
+      end
+
+      context "with a training provider not offering negated course" do
+        let(:training_provider_2) { create(:provider) }
+
+        let(:physical_education) { find_or_create(:secondary_subject, :physical_education) }
+        let(:biology) { find_or_create(:secondary_subject, :biology) }
+
+        let(:pe_course) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_1,
+                 subjects: [physical_education],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+        let(:biology_course) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_2,
+                 subjects: [biology],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+
+        let(:filters) { "?filter[subjects]=-#{physical_education.subject_code}" }
+
+        before do
+          pe_course
+          biology_course
+        end
+
+        it "is returns the provider" do
+          get request_path, headers: { "HTTP_AUTHORIZATION" => credentials }
+          json_response = JSON.parse(response.body)
+          provider_hashes = json_response["data"]
+          expect(provider_hashes.count).to eq(1)
+          expect(provider_names_in_response(provider_hashes)).to eq([training_provider_2.provider_name])
+        end
+      end
+    end
+
     describe "combined fee and subject filter" do
       context "with training providers offering courses that match a subject and funding type but are accredited by different provider" do
         let(:filters) { "?filter[subject]=#{physical_education.subject_code}&filter[funding_type]=fee" }
+        let(:training_provider_2) { create(:provider) }
+
+        let(:accredited_provider_2) {
+          create(:provider,
+                 organisations: [create(:organisation)],
+                 recruitment_cycle: recruitment_cycle)
+        }
+
+        let(:fee_paying_pe_course_1) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_1,
+                 program_type: :school_direct_training_programme,
+                 subjects: [physical_education],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+
+        let(:fee_paying_pe_course_2) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_2,
+                 subjects: [physical_education],
+                 program_type: :school_direct_training_programme,
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider_2)
+        end
+
+        let(:non_fee_pe_course) do
+          create(:course,
+                 level: :secondary,
+                 provider: training_provider_2,
+                 subjects: [physical_education],
+                 site_statuses: [build(:site_status, :findable, site: build(:site))],
+                 accrediting_provider: accredited_provider)
+        end
+
+        before do
+          fee_paying_pe_course_1
+          fee_paying_pe_course_2
+          non_fee_pe_course
+        end
+
+        it "is not returned" do
+          get request_path, headers: { "HTTP_AUTHORIZATION" => credentials }
+          json_response = JSON.parse(response.body)
+          provider_hashes = json_response["data"]
+          expect(provider_hashes.count).to eq(1)
+        end
+      end
+    end
+
+    xdescribe "combined negated subject filter" do
+      context "with training providers offering courses that match a subject and funding type but are accredited by different provider" do
+        let(:filters) { "?filter[subject]=-#{physical_education.subject_code}&filter[study_type]=fee" }
         let(:training_provider_2) { create(:provider) }
 
         let(:accredited_provider_2) {

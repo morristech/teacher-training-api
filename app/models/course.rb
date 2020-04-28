@@ -213,6 +213,7 @@ class Course < ApplicationRecord
   end
 
   scope :without_subjects, ->(subject_codes) do
+    # binding.pry # check the provider that are not coming up and why
     includes(:subjects).where.not(subject: { subject_code: subject_codes })
   end
 
