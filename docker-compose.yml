@@ -97,4 +97,4 @@ services:
       - DB_HOSTNAME=db
       - DB_USERNAME=postgres
       - DB_PASSWORD=developmentpassword
-      - SETTINGS__APPLICATION=teacher-training-api-bg-mailer
+      - SETTINGS__APPLICATION=teacher-training-api-bg-jobs
